@@ -1,0 +1,35 @@
+Create table TB_CADASTRO_CLIENTE
+
+id_cliente integer not null,
+nome_cliente varchar2(250),
+email_cliente varchar2(250),
+constraint tb_cadastro_cliente_pk primary_key
+
+id_cliente enable;
+
+------------------------------------------------------------------------------------------
+
+Create table TB_ENDERECO
+
+id_endereco integer not null,
+logradouro varchar(250),
+numero number,
+cidade varchar(250),
+estado varchar(250),
+pais varchar(250),
+cep varchar(250),
+id_cliente integer,
+constraint tb_endereco_pk primary key
+
+id_endereco enable;
+
+
+Alter table TB_ENDERECO
+add constraint TB_ENDERECO_FK1 foreign key
+id_cliente 
+references TB_CADASTRO_CLIENTE
+
+id_cliente enable;
+
+------------------------------------------------------------------------------------------
+
