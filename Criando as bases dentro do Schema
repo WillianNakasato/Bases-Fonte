@@ -1,35 +1,123 @@
-Create table TB_CADASTRO_CLIENTE
+CREATE TABLE TB_CADASTRO_CLIENTE 
 
-id_cliente integer not null,
-nome_cliente varchar2(250),
-email_cliente varchar2(250),
-constraint tb_cadastro_cliente_pk primary_key
+(
+  ID_CLIENTE                        INTEGER NOT NULL,
+  NOME_CLIENTE                      VARCHAR2(250),
+  EMAIL_CLIENTE                     VARCHAR2(250),
+  CONSTRAINT TB_CADASTRO_CLIENTE_PK PRIMARY KEY 
+  (ID_CLIENTE)                      ENABLE
+);
+------------------------------------------------------------------------------------------
 
-id_cliente enable;
+CREATE TABLE TB_ENDERECO 
+(
+  ID_ENDERECO               INTEGER NOT NULL, 
+  LOGRADOURO                VARCHAR2(250),
+  NUMERO                    NUMBER,
+  CIDADE                    VARCHAR2(250),
+  ESTADO                    VARCHAR2(250),
+  PAIS                      VARCHAR2(250),
+  CEP                       VARCHAR2(250),
+  ID_CLIENTE                INTEGER,
+  CONSTRAINT TB_ENDERECO_PK PRIMARY KEY 
+  (ID_ENDERECO)             ENABLE 
+);
+
+
+ALTER TABLE TB_ENDERECO
+
+ADD CONSTRAINT TB_ENDERECO_FK1  FOREIGN KEY
+(ID_CLIENTE)
+REFERENCES TB_CADASTRO_CLIENTE
+(ID_CLIENTE)                    ENABLE;
 
 ------------------------------------------------------------------------------------------
 
-Create table TB_ENDERECO
-
-id_endereco integer not null,
-logradouro varchar(250),
-numero number,
-cidade varchar(250),
-estado varchar(250),
-pais varchar(250),
-cep varchar(250),
-id_cliente integer,
-constraint tb_endereco_pk primary key
-
-id_endereco enable;
-
-
-Alter table TB_ENDERECO
-add constraint TB_ENDERECO_FK1 foreign key
-id_cliente 
-references TB_CADASTRO_CLIENTE
-
-id_cliente enable;
+CREATE TABLE TB_PRODUTO 
+(
+  ID_PRODUTO                INTEGER NOT NULL,
+  SKU                       VARCHAR2(250),
+  NOME_PRODUTO              VARCHAR2(250),
+  ID_CATEGORIA              INTEGER,
+  CONSTRAINT TB_PRODUTO_PK  PRIMARY KEY 
+  (ID_PRODUTO)              ENABLE 
+);
 
 ------------------------------------------------------------------------------------------
 
+CREATE TABLE TB_CATEGORIA 
+(
+  ID_CATEGORIA                INTEGER NOT NULL,
+  NOME_CATEGORIA              VARCHAR2(250),
+  NOME_SUB_CATEGORIA          VARCHAR2(250),
+  CONSTRAINT TB_CATEGORIA_PK  PRIMARY KEY 
+  (ID_CATEGORIA)              ENABLE 
+);
+
+
+ALTER TABLE TB_PRODUTO
+
+ADD CONSTRAINT TB_PRODUTO_FK1   FOREIGN KEY
+(ID_CATEGORIA)
+REFERENCES TB_CATEGORIA
+(ID_CATEGORIA)                  ENABLE;
+
+------------------------------------------------------------------------------------------
+
+CREATE TABLE TB_LOCALIDADE 
+(
+  ID_LOCALIDADE                 INTEGER NOT NULL,
+  NOME_LOCALIDADE               VARCHAR2(250),
+  CIDADE_LOCALIDADE             VARCHAR2(250),
+  CONSTRAINT TB_LOCALIDADE_PK   PRIMARY KEY 
+  (ID_LOCALIDADE)               ENABLE 
+);
+
+------------------------------------------------------------------------------------------
+
+CREATE TABLE TB_PEDIDOS 
+(
+  ID_TRANSACAO                INTEGER NOT NULL,
+  DATA_TRANSACAO              TIMESTAMP,
+  DATA_ENTREGA                TIMESTAMP,
+  STATUS_PAGAMENTO            VARCHAR2(250),
+  ID_CLIENTE                  INTEGER,
+  ID_LOCALIDADE               INTEGER,
+  CONSTRAINT TB_PEDIDOS_PK    PRIMARY KEY
+  (ID_TRANSACAO)              ENABLE 
+);
+
+
+ALTER TABLE TB_PEDIDOS
+
+ADD CONSTRAINT TB_PEDIDOS_FK1   FOREIGN KEY
+(ID_CLIENTE)
+REFERENCES TB_CADASTRO_CLIENTE
+(ID_CLIENTE)                    ENABLE;
+
+
+ALTER TABLE TB_PEDIDOS
+
+ADD CONSTRAINT TB_PEDIDOS_FK2 FOREIGN KEY
+(ID_LOCALIDADE)
+REFERENCES TB_LOCALIDADE
+(ID_LOCALIDADE)               ENABLE;
+
+------------------------------------------------------------------------------------------
+
+CREATE TABLE TB_ITENS_PEDIDO 
+(
+  ID_TRANSACAO                    INTEGER NOT NULL,
+  ID_PRODUTO                      INTEGER NOT NULL,
+  QUANTIDADE                      INTEGER,
+  PRECO_UNITARIO                  DOUBLE PRECISION,
+  CONSTRAINT TB_ITENS_PEDIDO_PK   PRIMARY KEY
+  (ID_TRANSACAO, ID_PRODUTO)      ENABLE 
+);
+
+
+ALTER TABLE TB_ITENS_PEDIDO
+ADD CONSTRAINT TB_ITENS_PEDIDO_FK1  FOREIGN KEY
+(ID_PRODUTO)
+REFERENCES TB_PRODUTO
+(ID_PRODUTO)                        ENABLE;
